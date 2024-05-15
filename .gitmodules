@@ -1,0 +1,6 @@
+# [submodule "server1"]
+# 	path = server1
+# 	url = https://github.com/bhanuteja-09/MERN.git
+# [submodule "server"]
+# 	path = server
+# 	url = https://github.com/bhanuteja-09/MERN.git
