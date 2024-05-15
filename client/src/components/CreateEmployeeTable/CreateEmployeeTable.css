@@ -1,0 +1,203 @@
+/* CreateEmployeeTable.css */
+
+.employee-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid black;
+  margin-top: 20px; /* Add some space between the logo and the table */
+}
+
+.employee-table tr:nth-child(even) {
+  /* text-align: ; */
+  /* background-color: #f2f2f2;  */
+  /* Alternate row background color */
+}
+
+/* .employee-table td label {
+  text-align:left ; */
+  /* background-color: #f2f2f2;  */
+  /* Alternate row background color */
+/* } */
+
+.title-row {
+  text-align: left;
+  font-weight: bold;
+  padding: 10px;
+  background-color:yellow; /* Title row background color */
+  color: black; /* Title row text color */
+}
+
+.form-row {
+  text-align: center;
+}
+
+.form-row label {
+  display: inline-block;
+  width: 80px; /* Adjust width as needed */
+  text-align: left;
+  margin-right: 20px; /* Adjust spacing between label and input */
+}
+
+.employee-table input{
+  /* padding:10px; */
+  margin-left: -390px;
+}
+
+.logo2 {
+  position: absolute;
+  top: -100px;
+  left: 10px;
+  width: 100px;
+  height: auto;
+}
+
+.form-cell label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-row input[type="text"],
+.form-row input[type="email"],
+.form-row input[type="tel"],
+.form-row select,
+.form-row input[type="checkbox"],
+.form-row input[type="file"]
+ {
+  width: 50%;
+  margin-left: -290px;
+  /* padding: 8px; */
+  /* margin-bottom: 10px; */
+  border: 1px solid #ccc;
+  /* border-radius: 4px; */
+  /* box-sizing: border-box; */
+}
+
+.form-cell select {
+  padding: 8px;
+  width:40%;
+}
+
+/* .form-row input[type="file"] {
+  margin-left: -70px;
+  margin-right: -20px;
+} */
+
+.form-cell input[type="submit"] {
+  width: 100%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.form-cell input[type="submit"]:hover {
+  background-color:yellow;
+}
+
+/* Styles for tablets (768px - 1023px) */
+/* @media (min-width: 768px) and (max-width: 992px) {
+  .employee-table label {
+    display: block;
+    width: auto;
+    text-align: left;
+    margin-right: -190px;
+    margin-left: 90px;
+  }
+} */
+/* for tablet view */
+@media (max-width: 1200px) {
+  .employee-table label {
+    display: block;
+    width: auto;
+    text-align: left;
+    margin-right: -390px;
+    margin-left: 100px;
+  }
+  .employee-table select {
+    width:51%;
+    margin-left: -290px;
+  }
+
+  .submit-button {
+    background-color: rgb(20, 241, 20);
+    margin-left: -205px;
+    width:10%;
+  }
+  
+}
+
+/* Styles for mobile devices (max-width: 767px) */
+@media (max-width: 767px) {
+  .employee-table label {
+    display: block;
+    width: 305%;
+    text-align: left;
+    margin-right: 50px;
+    margin-left: 20px;
+  }
+  .employee-table select {
+    width:54%;
+    margin-left: -291px;
+  }
+  .submit-button {
+    background-color: rgb(20, 241, 20);
+    margin-left: -80px;
+    width:20%;
+  }
+}
+
+.nav-cell {
+    align-items: center;
+    text-align: left;
+  
+}
+
+
+/* Tablet and mobile styles */
+/* @media (max-width: 1023px) {
+  .employee-table label {
+    display: block;
+    width: auto;
+    text-align: left; */
+    /* margin-right: 220px; */
+    /* margin-right: -200px;
+  }
+} */
+
+/* Full-screen desktop styles */
+@media (min-width: 1024px) {
+  .employee-table label {
+    /* display: table-cell; */
+    width: 200px; /* Adjust width as needed */
+    text-align: left;
+    padding-right: 10px; /* Adjust spacing as needed */
+  margin-left: 150px;
+  margin-right: 250px;
+  }
+
+  .submit-button {
+    background-color: rgb(20, 241, 20);
+    margin-left: -690px;
+    width:10%;
+  }
+  .employee-table input {
+    width: 50%;
+    padding: px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 0px;
+    box-sizing: border-box;
+    margin-left: 90px;
+    margin-right: 920px;
+  }
+
+  .employee-table select {
+    width:50%;
+    margin-left: -1017px;
+  }
+ 
+}

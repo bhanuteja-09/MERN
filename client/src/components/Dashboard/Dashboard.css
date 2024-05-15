@@ -1,0 +1,54 @@
+/* Dashboard.css */
+
+.dashboard-container {
+    position: absolute;
+  bottom: 200px; 
+    width: 97%; /* Make the table container fill the width */
+   /* height: 400px;   */
+}
+  
+  .dashboard-table {
+    border: 1px solid black; /* Add border to the entire table */
+    width: 100%; /* Ensure the table stretches to full width */
+    border-collapse: collapse; /* Remove gaps between cells */
+    height: 300px;    
+}
+  
+  .nav-cell,
+  .dashboard-title,
+  .welcome-cell {
+    text-align: center; /* Center text in all cells */
+    padding: 10px; /* Add padding for readability */
+     height: 0px;  
+}
+  
+  .dashboard-title {
+    background-color: yellow; /* Set yellow background for title row */
+    font-weight: bold; /* Make title text bold */
+    text-align: left;
+}
+  
+  .welcome-cell {
+    font-style: italic; /* Set welcome message to italics */
+  }
+  
+  /* Style for the first row (navigation) */
+  .nav-cell {
+    background-color: lightblue; /* Light blue background for navigation cells */
+  }
+  
+  /* Increase height for the rows after the Welcome Admin Panel */
+  .welcome-cell + tr,
+  .welcome-cell + tr + tr,
+  .welcome-cell + tr + tr + tr,
+  .welcome-cell + tr + tr + tr + tr {
+    height: 200px; /* Adjust the height as needed */
+  }
+  
+  .logo {
+    position: absolute;
+    top: -110px; /* Adjust as needed */
+    left: 10px; /* Adjust as needed */
+    width: 100px; /* Adjust width as needed */
+    height: auto; /* Maintain aspect ratio */
+  }
