@@ -1,28 +1,37 @@
-// backend/routes/auth.js
+// server/routes/auth.js
+
 const express = require('express');
 const router = express.Router();
-const Login = require('../models/Login');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const config = require('../config');
+const User = require('../models/User');
 
-// POST /api/login
-router.post('/api/login', async (req, res) => {
+// Login endpoint
+router.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
-  // Your login logic here (e.g., check username and password)
-
-  // Example: find a user by username and check password
   try {
-    const user = await Login.findOne({ username });
+    // Check if user exists
+    const user = await User.findOne({ username });
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(401).json({ error: 'Invalid username or password' });
     }
-    if (user.password !== password) {
-      return res.status(401).json({ message: 'Invalid password' });
+
+    // Verify password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Invalid username or password' });
     }
-    // Login successful
-    res.json({ message: 'Login successful', user });
+
+    // Generate JWT token
+    const token = jwt.sign({ userId: user._id }, config.jwtSecret, { expiresIn: '1h' });
+
+    // Send token to client
+    res.json({ token });
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error('Login failed:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

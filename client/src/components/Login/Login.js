@@ -3,7 +3,7 @@ import axios from 'axios';
 import './Login.css'; // Import CSS file for styling
 import logo from './MERN-Logo.png'; // Import your logo image
 
-const Login = () => {
+const Login = ({ setToken }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -12,8 +12,8 @@ const Login = () => {
     
     try {
       const response = await axios.post('/api/login', { username, password });
-      console.log(response.data);
-      // Optionally, handle successful login (e.g., redirect user)
+      const { token } = response.data;
+      setToken(token); // Set token received from server
     } catch (error) {
       console.error('Login failed:', error);
       // Optionally, handle login failure (e.g., display error message)
