@@ -1,36 +1,60 @@
-// server/routes/employee.js
-
 const express = require('express');
 const router = express.Router();
 const Employee = require('../models/Employee');
-const auth = require('../middleware/auth');
+const multer = require('multer');
+const path = require('path');
 
-// Create employee route
-router.post('/', auth, async (req, res) => {
-  try {
-    const employeeData = req.body;
-    const newEmployee = new Employee(employeeData);
-    await newEmployee.save();
-    res.status(201).json(newEmployee);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server Error' });
+// Set up multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
   }
 });
 
-// Update employee route
-router.put('/:id', auth, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const employeeData = req.body;
-    const updatedEmployee = await Employee.findByIdAndUpdate(id, employeeData, { new: true });
-    if (!updatedEmployee) {
-      return res.status(404).json({ message: 'Employee not found' });
+const upload = multer({ 
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    const filetypes = /jpeg|jpg|png/;
+    const mimetype = filetypes.test(file.mimetype);
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+
+    if (mimetype && extname) {
+      return cb(null, true);
+    } else {
+      cb(new Error('Error: Images Only!'));
     }
-    res.json(updatedEmployee);
+  }
+});
+
+// Route to create an employee
+router.post('/create', upload.single('image'), async (req, res) => {
+  try {
+    const { name, email, mobile, designation, gender, course } = req.body;
+
+    const existingEmployee = await Employee.findOne({ email });
+    if (existingEmployee) {
+      return res.status(400).json({ error: 'Email already exists' });
+    }
+
+    const newEmployee = new Employee({
+      name,
+      email,
+      mobile,
+      designation,
+      gender,
+      course,
+      image: req.file.path
+    });
+
+    await newEmployee.save();
+
+    res.status(201).json({ message: 'Employee created successfully' });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server Error' });
+    console.error('Error creating employee:', error);
+    res.status(500).json({ error: 'Server Error' });
   }
 });
 

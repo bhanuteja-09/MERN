@@ -1,37 +1,33 @@
-// server/routes/auth.js
-
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcryptjs'); // Updated from bcrypt to bcryptjs
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const config = require('../config');
-const User = require('../models/User');
+const User = require('../models/User'); // Ensure this path is correct
+const { jwtSecret } = require('../config');
 
-// Login endpoint
-router.post('/login', async (req, res) => {
+router.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
 
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Both fields are required' });
+  }
+
   try {
-    // Check if user exists
     const user = await User.findOne({ username });
     if (!user) {
       return res.status(401).json({ error: 'Invalid username or password' });
     }
 
-    // Verify password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
       return res.status(401).json({ error: 'Invalid username or password' });
     }
 
-    // Generate JWT token
-    const token = jwt.sign({ userId: user._id }, config.jwtSecret, { expiresIn: '1h' });
-
-    // Send token to client
-    res.json({ token });
-  } catch (error) {
-    console.error('Login failed:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    const token = jwt.sign({ id: user._id }, jwtSecret, { expiresIn: '1h' });
+    res.json({ user: { username: user.username }, token });
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 

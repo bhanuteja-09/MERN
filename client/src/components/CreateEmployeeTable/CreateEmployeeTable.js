@@ -1,182 +1,133 @@
-import React, {useState } from 'react';
+import React, { useState } from 'react';
+import axiosInstance from '../../axiosInstance';
 import './CreateEmployeeTable.css'; // Import CSS file for styling
 import logo from './MERN-Logo.png'; // Import your logo image
 
 const CreateEmployeeTable = () => {
-  const [id, setId] = useState('');
-  const [image, setImage] = useState(null);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [mobile, setMobile] = useState('');
-  const [designation, setDesignation] = useState('');
-  const [gender, setGender] = useState('');
-  const [course, setCourse] = useState('');
-  const [createDate, setCreateDate] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    mobile: '',
+    designation: '',
+    gender: '',
+    course: '',
+    image: null
+  });
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: files ? files[0] : value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you can perform form submission logic, such as sending data to a server
-    console.log('Form submitted!');
+
+    if (!validateForm()) {
+      return;
+    }
+
+    const data = new FormData();
+    Object.keys(formData).forEach((key) => {
+      data.append(key, formData[key]);
+    });
+
+    try {
+      const response = await axiosInstance.post('/employees/create', data);
+      console.log('Form submitted successfully!', response.data);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    }
+  };
+
+  const validateForm = () => {
+    const { name, email, mobile, designation, gender, course, image } = formData;
+
+    if (!name || !email || !mobile || !designation || !gender || !course || !image) {
+      console.error('All fields are required');
+      return false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      console.error('Invalid email format');
+      return false;
+    }
+
+    const mobileRegex = /^[0-9]{10}$/;
+    if (!mobileRegex.test(mobile)) {
+      console.error('Invalid mobile number format');
+      return false;
+    }
+
+    const validImageTypes = ['image/jpeg', 'image/png'];
+    if (!validImageTypes.includes(image.type)) {
+      console.error('Only JPG/PNG files are allowed');
+      return false;
+    }
+
+    return true;
   };
 
   return (
     <div className="dashboard-container">
       <img src={logo} alt="Logo" className="logo2" />
-      {/* Add logo above the table */}
       <form className="form-row" onSubmit={handleSubmit}>
         <table className="employee-table">
           <tbody>
-            {/* First row for navigation */}
             <tr>
-              <td className="nav-cell">
-                <a href="#">Home</a> {/* Replace with actual links */}
-              </td>
-              <td className="nav-cell">
-                <a href="#">Employee List</a>
-              </td>
-              {/* <td className="nav-cell">
-                <a href="#">Hukum Gupta-</a> 
-               
-              </td>
-              <td className="nav-cell">
-                <a href="#">Logout</a>
-              </td> */}
+              <td className="nav-cell"><a href="#">Home</a></td>
+              <td className="nav-cell"><a href="#">Employee List</a></td>
             </tr>
-            {/* Second row for "Dashboard" title */}
             <tr>
-              <td colSpan="4" className="title-row">
-                Create Employee
-              </td>
+              <td colSpan="4" className="title-row">Create Employee</td>
             </tr>
-            <br></br>
-            {/* Form fields row by row */}
-            {/* <tr>
-              <td>
-                <label htmlFor="f_Id">ID:</label>
-              </td>
+            {['name', 'email', 'mobile', 'designation', 'gender', 'course'].map((field) => (
+              <tr key={field}>
+                <td><label htmlFor={`f_${field}`}>{field.charAt(0).toUpperCase() + field.slice(1)}:</label></td>
+                <td>
+                  {field === 'gender' ? (
+                    <select id={`f_${field}`} name={field} value={formData[field]} onChange={handleChange} required>
+                      <option value="">Select</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  ) : (
+                    <input
+                      type={field === 'email' ? 'email' : 'text'}
+                      id={`f_${field}`}
+                      name={field}
+                      value={formData[field]}
+                      onChange={handleChange}
+                      required
+                    />
+                  )}
+                </td>
+              </tr>
+            ))}
+            <tr>
+              <td><label htmlFor="f_image">Image:</label></td>
               <td>
                 <input
-                  type="text"
-                  id="f_Id"
-                  value={id}
-                  onChange={(e) => setId(e.target.value)}
+                  type="file"
+                  id="f_image"
+                  name="image"
+                  accept=".jpg,.jpeg,.png"
+                  onChange={handleChange}
                   required
                 />
               </td>
-            </tr> */}
-
-            {/* Other form fields */}
-            
-          <tr>
-            <td>
-              <label htmlFor="f_Name">Name:</label>
-            </td>
-            <td>
-              <input
-                type="text"
-                id="f_Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label htmlFor="f_Email">Email:</label>
-            </td>
-            <td>
-              <input
-                type="email"
-                id="f_Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label htmlFor="f_Mobile">Mobile No:</label>
-            </td>
-            <td>
-              <input
-                type="tel"
-                id="f_Mobile"
-                value={mobile}
-                onChange={(e) => setMobile(e.target.value)}
-                pattern="[0-9]{10}"
-                required
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label htmlFor="f_Designation">Designation:</label>
-            </td>
-            <td>
-              <input
-                type="text"
-                id="f_Designation"
-                value={designation}
-                onChange={(e) => setDesignation(e.target.value)}
-                required
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label htmlFor="f_gender">Gender:</label>
-            </td>
-            <td>
-              <select
-                id="f_gender"
-                value={gender}
-                onChange={(e) => setGender(e.target.value)}
-                required
-              >
-                <option value="">Select</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-              </select>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label htmlFor="f_Course">Course:</label>
-            </td>
-            <td>
-              <input
-                type="text"
-                id="f_Course"
-                value={course}
-                onChange={(e) => setCourse(e.target.value)}
-                required
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label htmlFor="f_Image">Image:</label>
-            </td>
-            <td>
-              <input
-                type="file"
-                id="f_Image"
-                accept="image/jpeg, image/png"
-                onChange={(e) => setImage(e.target.files[0])}
-                required
-              />
-            </td>
-          </tr>
-          <tr>
-            <td colSpan="2" className="button-cell">
-              <button className="submit-button" type="submit">Submit</button>
-            </td>
-          </tr>
+            </tr>
+            <tr>
+              <td colSpan="4" className="button-row">
+                <button type="submit">Submit</button>
+              </td>
+            </tr>
           </tbody>
         </table>
-        {/* <button className="submit-button" type="submit">Submit</button> */}
       </form>
     </div>
   );
